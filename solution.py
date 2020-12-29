@@ -369,8 +369,197 @@ class Solution:
                 nums[i] = nums[j]
                 nums[j] = temp
                 j += 1
-        
 
+    '''
+        452. 用最少数量的箭引爆气球
+            在二维空间中有许多球形的气球。对于每个气球，提供的输入是水平方向上，气球直径的开始和结束坐标。
+            由于它是水平的，所以纵坐标并不重要，因此只要知道开始和结束的横坐标就足够了。开始坐标总是小于结束坐标。
+            一支弓箭可以沿着 x 轴从不同点完全垂直地射出。在坐标 x 处射出一支箭，若有一个气球的直径的开始和结束坐标为 xstart，xend， 且满足  xstart ≤ x ≤ xend，则该气球会被引爆。可以射出的弓箭的数量没有限制。 弓箭一旦被射出之后，可以无限地前进。我们想找到使得所有气球全部被引爆，所需的弓箭的最小数量。
+            给你一个数组 points ，其中 points [i] = [xstart,xend] ，返回引爆所有气球所必须射出的最小弓箭数。
+            示例 1：
+            输入：points = [[10,16],[2,8],[1,6],[7,12]]
+            输出：2
+            解释：对于该样例，x = 6 可以射爆 [2,8],[1,6] 两个气球，以及 x = 11 射爆另外两个气球
+    '''
+    def findMinArrowShots(self, points):
+        #求并集，复杂度排序+n*n ,超时
+        if 0:
+            def point2list(point):
+                return [i for i in  range(point[0] , point[1] + 1)]
+            points.sort(key = lambda x:[x[0],x[1]])
+            print(points)
+            needed = 0
+            set_need = set(point2list(points[0]))
+            for i in range(1 , len(points)):
+                set_need&=set(point2list(points[i]))
+                print(i,set_need)
+                if len(set_need) == 0:
+                    needed += 1
+                    set_need = set(point2list(points[i]))
+            print(needed + 1)
+            return needed+1
+        
+        #判断首尾
+        needed = 1
+        if len(points) == 1:
+            return needed
+        elif len(points) == 0:
+            return 0
+        points.sort(key = lambda x:[x[0],x[1]])
+        the_min , the_max = points[0][0],points[0][1]
+        # print(points)
+        # print(0,the_min , the_max)
+        for i in range(1 , len(points)):
+            # print(i,the_min , the_max)
+            if points[i][0] > the_max:#不相交
+                the_min , the_max = points[i][0],points[i][1]
+                needed += 1
+            else:
+                the_min = max(the_min,points[i][0])
+                the_max = min(the_max,points[i][1])
+        # print(needed)
+        return needed
+
+        #判断一边，按右排序; 右永远大于设定值，如果左小于设定，那就相交；否则更新设定为现在的右，箭数加1
+        if len(points)==0:
+            return 0
+        # points.sort() 速度慢
+        sortedpoints = sorted(points,key=lambda x:x[1])
+        n=1
+        tmp = sortedpoints[0][1]
+        for point in sortedpoints[1:]:
+            if point[0]>tmp:
+                tmp = point[1]
+                n = n+1             
+        return n
+
+    '''
+        493. 翻转对
+        给定一个数组 nums ，如果 i < j 且 nums[i] > 2*nums[j] 我们就将 (i, j) 称作一个重要翻转对。
+        你需要返回给定数组中的重要翻转对的数量。
+        示例 1:
+        输入: [1,3,2,3,1]
+        输出: 2
+        示例 2:
+        输入: [2,4,3,5,1]
+        输出: 3
+    '''
+    def reversePairs(self, nums):
+        pass
+
+    
+    '''
+    767. 重构字符串
+    给定一个字符串S，检查是否能重新排布其中的字母，使得两相邻的字符不同。
+    若可行，输出任意可行的结果。若不可行，返回空字符串。
+    示例 1:
+    输入: S = "aab"
+    输出: "aba"
+    '''
+    def reorganizeString(self, S):
+        from collections import defaultdict
+        d = defaultdict(lambda: 0)
+        for s in S:
+            d[s] += 1
+        listd = list(zip(d.keys(), d.values()))
+        listd.sort(key = lambda x:x[1] , reverse = True)
+        listd = [list(i) for i in listd]
+        if listd[0][1] - 1 > len(S) - listd[0][1]:return '' #不能插空
+        result = ''
+        while len(listd) - 1 > 0:
+            for i in range(len(listd)):
+                result += (listd[i][0])
+                listd[i][1] -= 1
+                if listd[i][1]  <  1:
+                    del listd[i]
+                    break
+        
+        if len(listd) == 0:return result
+        #只剩下最多的，再插一次
+        result = list(result)
+        result.append('.')
+        i = 0
+        while  listd[0][1]:
+            i +=1
+            if result[i] != listd[0][0] and result[i+1] != listd[0][0]:
+                result.insert(i+1,listd[0][0])
+                listd[0][1] -= 1
+                i += 1
+        rr = ''
+        for r in result:
+            rr += r
+        return rr[:-1]
+
+    '''
+    204. 计数质数
+    统计所有小于非负整数 n 的质数的数量。
+    '''
+    def countPrimes(self, n):
+        if n < 2:
+            return 0
+
+        num_list = [True]*n
+        num_list[0], num_list[1] = False, False
+
+        for i in range(2, int(pow(n, 0.5)) + 1):
+            if num_list[i]:  # 如果i为质数(不是任何质数的倍数)
+                num_list[i * i::i] = [False] * ((n - i * i - 1) // i + 1)  # 因为要包含i*i所以需要+1；因为n不在列表里，所以需要-1
+
+        return sum(num_list)  # True就是1，False就是0，可以直接统计
+    
+    '''
+    118. 杨辉三角
+        给定一个非负整数 numRows，生成杨辉三角的前 numRows 行。
+    '''
+    def generate(self, numRows) :
+        if numRows == 0:return []
+        elif numRows == 1:return[[1]]
+
+        results = [[1]]
+        for i in range(1,numRows):
+            results.append([results[i-1][j]+results[i-1][j+1]  for j in range(len(results[i - 1]) -1) ] )
+            results[i].append(1)
+            results[i].insert(0,1)
+        print(results)
+        return results
+
+    '''
+    738. 单调递增的数字
+        给定一个非负整数 N，找出小于或等于 N 的最大的整数，同时这个整数需要满足其各个位数上的数字是单调递增。
+        （当且仅当每个相邻位数上的数字 x 和 y 满足 x <= y 时，我们称这个整数是单调递增的。）
+    '''
+    def monotoneIncreasingDigits(self, N):
+        if N < 10:return N
+        list_num = [int(n) for n in list(str(N))]
+        for i in range(1,len(list_num)):
+            if list_num[i] >= list_num[i-1]:
+                pass
+            else:
+                #溯源到其相等的第一个数
+                while True:
+                    if i - 1 == 0:break
+                    if list_num[i-1] == list_num[i -2]:
+                        i-=1
+                    else:
+                        break
+                list_num[i-1] -= 1
+                for j in range(i,len(list_num)):
+                    list_num[j] = 9
+        N = 0
+        for i,n in  enumerate(list_num):N += n*10**(len(list_num) - i - 1)
+        print(N)
+        return N
+
+    '''
+    34. 在排序数组中查找元素的第一个和最后一个位置
+        给定一个按照升序排列的整数数组 nums，和一个目标值 target。找出给定目标值在数组中的开始位置和结束位置。
+        如果数组中不存在目标值 target，返回 [-1, -1]。
+
+        进阶：  你可以设计并实现时间复杂度为 O(log n) 的算法解决此问题吗？
+    '''
+    def searchRange(self, nums, target):
+        pass
+        
 
     '''
         514. 自由之路
@@ -438,8 +627,8 @@ class Solution:
 if __name__ == "__main__":
     S = Solution()
     # S.findRotateSteps(ring = "godding", key = "godding")
-    # S.findRotateSteps(ring = "abcde", key = "ade")
     
-    # print (S.canCompleteCircuit( gas  = [1,2,3,4,5],cost = [3,4,5,1,2])  )
-
-    S.moveZeroes([0,1,0,3,12])
+    # k = [[[10,16],[2,8],[1,6],[7,12]], [[1,2],[3,4],[5,6],[7,8]] ,  [[1,2]] ,  [[2,3],[2,3]]]
+    # S.findMinArrowShots(k[2])
+    # S.reversePairs([1,10,3,10,3,1])
+    S.monotoneIncreasingDigits(123444345)

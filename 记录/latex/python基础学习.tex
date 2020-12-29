@@ -1,0 +1,914 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    \usepackage{xeCJK}
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for grffile with XeLaTeX
+    \def\Gread@@xetex#1{%
+      \IfFileExists{"\Gin@base".bb}%
+      {\Gread@eps{\Gin@base.bb}}%
+      {\Gread@@xetex@aux#1}%
+    }
+    \makeatother
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{python基础学习}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        \ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{pythonux57faux7840ux5b66ux4e60}{%
+\section{Python基础学习}\label{pythonux57faux7840ux5b66ux4e60}}
+
+    \hypertarget{ux6570ux636eux7c7bux578b}{%
+\subsection{数据类型:}\label{ux6570ux636eux7c7bux578b}}
+
+\textbf{1. False~True 、 None（0是有意义的，None不是0，空值}
+
+\textbf{2. dict}
+
+\textbf{3. set}
+以看成数学意义上的无序和无重复元素的集合，因此，两个set可以做数学意义上的交集、并集等操作.
+
+**4. list*
+\texttt{list.append(obj)\ \ \ \ 在列表末尾添加新的对象\ \ \ \ \ \ \ \ \ \ \ \ \ list.count(obj)\ \ \ \ \ 统计某个元素在列表中出现的次数\ \ \ \ \ \ \ \ \ \ \ \ \ list.extend(seq)\ \ \ \ 在列表末尾一次性追加另一个序列中的多个值（用新列表扩展原来的列表）\ \ \ \ \ \ \ \ \ \ \ \ \ list.index(obj)\ \ \ \ \ 从列表中找出某个值第一个匹配项的索引位置\ \ \ \ \ \ \ \ \ \ \ \ \ list.insert(index,\ obj)\ \ \ \ \ 将对象插入列表\ \ \ \ \ \ \ \ \ \ \ \ \ list.pop(obj=list{[}-1{]})\ \ \ \ \ \ 移除列表中的一个元素（默认最后一个元素），并且返回该元素的值\ \ \ \ \ \ \ \ \ \ \ \ \ list.remove(obj)\ \ \ \ 移除列表中某个值的第一个匹配项\ \ \ \ \ \ \ \ \ \ \ \ \ list.reverse()\ \ \ \ \ \ 反向列表中元素\ \ \ \ \ \ \ \ \ \ \ \ \ list.sort({[}func{]})\ \ \ 对原列表进行排序\ 二维list,\ \ list.sort(key\ =\ lambda\ x:{[}x{[}0{]},-{[}x1{]}{]}\ ,reverse=False)\ \#对0升序、1降序排序}
+\textbf{5.tuple} 值不可改变
+
+    \hypertarget{collections}{%
+\subsection{collections}\label{collections}}
+
+\textbf{1. namedtuple (`名称', {[}属性list{]})}
+
+\begin{verbatim}
+    _make（构造）、 _replace（更改值需要返回new） 、_asdict()（转dict） 、_fields（返回名字） 、 _field_defaults
+\end{verbatim}
+
+\textbf{2. deque（双向队列）} collections.deque({[}iterable{[},
+maxlen{]}{]}) 超过maxlen，再加入则旧数据从另一端弹出；
+
+\begin{verbatim}
+使用list存储数据时，按索引访问元素很快，但是插入和删除元素就很慢了，因为list是线性存储，数据量大的时候，插入和删除效率很低。**deque是为了高效实现插入和删除操作的双向列表，适合用于队列和栈.**
+ 
+deque除了实现list的append()和pop()外，还支持appendleft()和popleft()，这样就可以非常高效地往头部添加或删除元素。
+    append(x)       添加 x 到右端。
+    appendleft(x)   添加 x 到左端。
+    clear()         移除所有元素，使其长度为0.
+    copy()          创建一份浅拷贝。
+    count(x)        计算 deque 中元素等于 x 的个数。
+    extend(iterable)     扩展deque的右侧，通过添加iterable参数中的元素。
+    extendleft(iterable) 扩展deque的左侧，通过添加iterable参数中的元素。注意，左添加时，在结果中iterable参数中的顺序将被反过来添加。
+    index(x[, start[, stop]])  返回 x 在 deque 中的位置（在索引 start 之后，索引 stop 之前）。 返回第一个匹配项，如果未找到则引发 ValueError。
+    insert(i, x)    在位置 i 插入 x 。如果插入会导致一个限长 deque 超出长度 maxlen 的话，就引发一个 IndexError。
+    pop()           移去并且返回一个元素，deque 最右侧的那一个。 如果没有元素的话，就引发一个 IndexError。
+    popleft()       移去并且返回一个元素，deque 最左侧的那一个。 如果没有元素的话，就引发 IndexError。
+    remove(value)   移除找到的第一个 value。 如果没有的话就引发 ValueError。
+    reverse()       将deque逆序排列。返回 None 。
+    rotate(n=1)     向右循环移动 n 步。 如果 n 是负数，就向左循环(环形)。如果deque不是空的，向右循环移动一步就等价于 d.appendleft(d.pop()) ， 向左循环一步就等价于 d.append(d.popleft()) 。
+\end{verbatim}
+
+\textbf{3. defaultdict}
+使用dict时，如果引用的Key不存在，就会抛出KeyError。如果希望key不存在时，返回一个默认值，就可以用defaultdict；也就是添加一个默认值。
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  OrderedDict 有序字典，同py37以上dict
+\end{enumerate}
+
+\textbf{5. ChainMap}
+将多个映射快速的链接到一起，作为一个单元处理(字典处理相当于
+dict.update(dict\_new)，但比其更快).
+
+\textbf{6. Counter} 一个 Counter 是一个 dict
+的子类，用于计数可哈希对象。它是一个集合，元素像字典键(key)一样存储，它们的计数存储为值。计数可以是任何整数值，包括0和负数。
+
+\begin{verbatim}
+    elements()    返回一个迭代器，其中每个元素将重复出现计数值所指定次。 元素会按**首次出现**的顺序返回。 如果一个元素的计数值小于一，elements() 将会忽略它。
+    most_common([n])   返回一个列表，其中包含 n 个最常见的元素及出现次数，**按常见程度由高到低排序**。 如果 n 被省略或为 None，most_common() 将返回计数器中的 所有 元素。
+    subtract([iterable-or-mapping])   从 迭代对象 或 映射对象 减去元素。像 dict.update() 但是是减去，而不是替换。输入和输出都可以是0或者负数.
+    update([iterable-or-mapping])     从 迭代对象 计数元素或者 从另一个 映射对象 (或计数器) 添加。 像 dict.update() 但是是加上，而不是替换。另外，迭代对象 应该是序列元素
+\end{verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{collections} \PY{k+kn}{import} \PY{n}{namedtuple}
+\PY{n}{Circle} \PY{o}{=} \PY{n}{namedtuple}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Circle}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{c} \PY{o}{=} \PY{n}{Circle}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{isinstance}\PY{p}{(}\PY{n}{c}\PY{p}{,} \PY{n}{Circle}\PY{p}{)}\PY{p}{,}\PY{n+nb}{isinstance}\PY{p}{(}\PY{n}{c}\PY{p}{,} \PY{n+nb}{tuple}\PY{p}{)}\PY{p}{,}\PY{n}{c}\PY{o}{.}\PY{n}{x}\PY{p}{,}\PY{n}{c}\PY{o}{.}\PY{n}{y}\PY{p}{,}\PY{n}{c}\PY{o}{.}\PY{n}{r}\PY{p}{)}\PY{c+c1}{\PYZsh{}自定义的也属于tuple，输出这个自定义tuple的各个值}
+\PY{n}{new\PYZus{}t} \PY{o}{=} \PY{n}{Circle}\PY{o}{.}\PY{n}{\PYZus{}make}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{]}\PY{p}{)}
+\PY{n}{new\PYZus{}t} \PY{o}{=} \PY{n}{new\PYZus{}t}\PY{o}{.}\PY{n}{\PYZus{}replace}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{l+m+mi}{11}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{new\PYZus{}t}\PY{o}{.}\PY{n}{\PYZus{}fields} \PY{p}{,} \PY{n}{new\PYZus{}t}\PY{o}{.}\PY{n}{\PYZus{}asdict}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+True True 5 8 3
+('x', 'y', 'r') \{'x': 11, 'y': 2, 'r': 10\}
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{collections} \PY{k+kn}{import} \PY{n}{deque}
+\PY{n}{q} \PY{o}{=} \PY{n}{deque}\PY{p}{(}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{q}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{q}\PY{o}{.}\PY{n}{popleft}\PY{p}{(}\PY{p}{)}
+\PY{n}{q}\PY{o}{.}\PY{n}{appendleft}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{q}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{collections} \PY{k+kn}{import} \PY{n}{defaultdict}
+\PY{n}{dd} \PY{o}{=} \PY{n}{defaultdict}\PY{p}{(}\PY{k}{lambda}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{N/A}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{dd}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{key1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{abc}\PY{l+s+s1}{\PYZsq{}}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{dd}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{key2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)} \PY{c+c1}{\PYZsh{} key2不存在，返回默认值}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{collections} \PY{k+kn}{import} \PY{n}{ChainMap}
+\PY{n}{d1} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{l+m+mi}{3}\PY{p}{\PYZcb{}}
+\PY{n}{d2} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{d}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{l+m+mi}{5}\PY{p}{\PYZcb{}}
+\PY{n}{new\PYZus{}d} \PY{o}{=} \PY{n}{d1}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{new\PYZus{}d}\PY{o}{.}\PY{n}{update}\PY{p}{(}\PY{n}{d2}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{list}\PY{p}{(}\PY{n}{new\PYZus{}d}\PY{p}{)}\PY{p}{,}\PY{n}{new\PYZus{}d}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{list}\PY{p}{(}\PY{n}{ChainMap}\PY{p}{(}\PY{n}{d1}\PY{p}{,}\PY{n}{d2}\PY{p}{)}\PY{p}{)} \PY{p}{,}\PY{n}{ChainMap}\PY{p}{(}\PY{n}{d1}\PY{p}{,}\PY{n}{d2}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+['a', 'b', 'c', 'd']
+['a', 'b', 'd', 'c']
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{collections} \PY{k+kn}{import} \PY{n}{Counter}
+\PY{n}{c} \PY{o}{=} \PY{n}{Counter}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{abccc}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{c+c1}{\PYZsh{}初始化方式,(\PYZdq{}a\PYZdq{}=1,\PYZsq{}b\PYZsq{}=2,\PYZsq{}c\PYZsq{}=3) or (\PYZdq{}a\PYZdq{}:1,\PYZsq{}b\PYZsq{}:2,\PYZsq{}c\PYZsq{}:3) }
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{c}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{k}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}\PY{c+c1}{\PYZsh{}0  返回该元素的个数}
+\PY{n}{c}\PY{o}{.}\PY{n}{update}\PY{p}{(}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{q}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{c+c1}{\PYZsh{}增加}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{c}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{c}\PY{o}{.}\PY{n}{most\PYZus{}common}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)} \PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{list}\PY{p}{(}\PY{n}{c}\PY{o}{.}\PY{n}{elements}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{n}{c}\PY{o}{.}\PY{n}{subtract}\PY{p}{(}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{q}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{q}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{c}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+0
+Counter(\{'c': 3, 'a': 2, 'b': 2, 'q': 1\})
+[('c', 3), ('a', 2), ('b', 2)]
+['a', 'a', 'b', 'b', 'c', 'c', 'c', 'q']
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Counter(\{'a': 0, 'b': 2, 'c': 3, 'q': -1\})
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{ux51fdux6570}{%
+\subsection{函数}\label{ux51fdux6570}}
+
+\textbf{1.lambda（匿名函数）} lambda:f(x) = def:return f(x);\\
+过滤: L = list(filter(lambda x:x\%2 \textgreater{} 0, range(1, 20)))
+，1-20奇数
+
+\textbf{2.map} map(f,list) = f(i) for i in list;
+
+\textbf{3.reduce} reduce(f, {[}x1, x2, x3, x4{]}) = f(f(f(x1, x2), x3),
+x4) ; \textbf{from functools import reduce}
+
+\textbf{4.filter}
+和map()类似，filter()也接收一个函数和一个序列。和map()不同的是，filter()把传入的函数依次作用于每个元素，然后根据返回值是True还是False决定保留还是丢弃该元素。
+
+\textbf{5.sorted} 用法 sorted(a,key=None,reverse=False) 默认从小到大;
+
+\textbf{6.偏函数} int2 = functools.partial(int, base=2)
+即创建二进制字符串转int的函数int2.
+
+\textbf{7.装饰器} 利用@fuc，相当于在该函数执行前执行了 fuc(f)
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}如序列变为整数: }
+\PY{k+kn}{from} \PY{n+nn}{functools} \PY{k+kn}{import} \PY{n}{reduce}
+\PY{n}{reduce}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{:}\PY{l+m+mi}{10}\PY{o}{*}\PY{n}{x}\PY{o}{+}\PY{n}{y}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{]}\PY{p}{)}\PY{c+c1}{\PYZsh{}12345}
+
+\PY{c+c1}{\PYZsh{}思考：写一个str2int且不用int()。}
+\PY{n}{DIGITS} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{4}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{5}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{5}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{6}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{6}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{7}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{7}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{8}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{8}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{9}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{9}\PY{p}{\PYZcb{}}
+\PY{k}{def} \PY{n+nf}{char2num}\PY{p}{(}\PY{n}{s}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{DIGITS}\PY{p}{[}\PY{n}{s}\PY{p}{]}
+\PY{k}{def} \PY{n+nf}{str2int}\PY{p}{(}\PY{n}{s}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{reduce}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{:} \PY{n}{x} \PY{o}{*} \PY{l+m+mi}{10} \PY{o}{+} \PY{n}{y}\PY{p}{,} \PY{n+nb}{map}\PY{p}{(}\PY{n}{char2num}\PY{p}{,} \PY{n}{s}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+12345
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}L = list(filter(lambda x:x\PYZpc{}2 \PYZgt{} 0, range(1, 20)))}
+
+\PY{c+c1}{\PYZsh{}用Python来实现这个算法，可以先构造一个从3开始的奇数序列：}
+\PY{k}{def} \PY{n+nf}{\PYZus{}odd\PYZus{}iter}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{n}{n} \PY{o}{=} \PY{l+m+mi}{1}
+    \PY{k}{while} \PY{k+kc}{True}\PY{p}{:}
+        \PY{n}{n} \PY{o}{=} \PY{n}{n} \PY{o}{+} \PY{l+m+mi}{2}
+        \PY{k}{yield} \PY{n}{n}
+\PY{c+c1}{\PYZsh{}注意这是一个生成器，并且是一个无限序列。}
+
+\PY{c+c1}{\PYZsh{}然后定义一个筛选函数：}
+\PY{k}{def} \PY{n+nf}{\PYZus{}not\PYZus{}divisible}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{x} \PY{o}{\PYZpc{}} \PY{n}{n} \PY{o}{\PYZgt{}} \PY{l+m+mi}{0}
+
+\PY{c+c1}{\PYZsh{}最后，定义一个生成器，不断返回下一个素数：}
+\PY{k}{def} \PY{n+nf}{primes}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{k}{yield} \PY{l+m+mi}{2}
+    \PY{n}{it} \PY{o}{=} \PY{n}{\PYZus{}odd\PYZus{}iter}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{} 初始序列  3 5 7 9 11 ...}
+    \PY{k}{while} \PY{k+kc}{True}\PY{p}{:}
+        \PY{n}{n} \PY{o}{=} \PY{n+nb}{next}\PY{p}{(}\PY{n}{it}\PY{p}{)} \PY{c+c1}{\PYZsh{} 取出并返回序列的第一个数 3}
+        \PY{k}{yield} \PY{n}{n}
+        \PY{n}{it} \PY{o}{=} \PY{n+nb}{filter}\PY{p}{(}\PY{n}{\PYZus{}not\PYZus{}divisible}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{,} \PY{n}{it}\PY{p}{)} \PY{c+c1}{\PYZsh{} 更新序列，剔除掉能整除3的数   5 7 11 ...}
+        
+\PY{c+c1}{\PYZsh{}这个生成器先返回第一个素数2，然后，利用filter()不断产生筛选后的新的序列。primes()也是一个无限序列}
+
+
+\PY{c+c1}{\PYZsh{} 打印100以内的素数:}
+\PY{k}{for} \PY{n}{n} \PY{o+ow}{in} \PY{n}{primes}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{n} \PY{o}{\PYZlt{}} \PY{l+m+mi}{10}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{n}\PY{p}{,}\PY{n}{end}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}t}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{k}{else}\PY{p}{:}
+        \PY{k}{break}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+2       3       5       7
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{functools}
+\PY{n}{int2} \PY{o}{=} \PY{n}{functools}\PY{o}{.}\PY{n}{partial}\PY{p}{(}\PY{n+nb}{int}\PY{p}{,} \PY{n}{base}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{int2}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{1001001101}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+589
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{time}
+ 
+\PY{c+c1}{\PYZsh{}三层嵌套}
+\PY{k}{def} \PY{n+nf}{log}\PY{p}{(}\PY{n}{text}\PY{p}{)}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf}{decorator}\PY{p}{(}\PY{n}{func}\PY{p}{)}\PY{p}{:}
+        \PY{k}{def} \PY{n+nf}{wrapper}\PY{p}{(}\PY{o}{*}\PY{n}{args}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{kw}\PY{p}{)}\PY{p}{:}
+            \PY{n}{now\PYZus{}time} \PY{o}{=}  \PY{n}{time}\PY{o}{.}\PY{n}{strftime}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{Y\PYZhy{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{m\PYZhy{}}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s2}{ }\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{H:}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{M:}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{S}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{time}\PY{o}{.}\PY{n}{localtime}\PY{p}{(}\PY{p}{)}\PY{p}{)} 
+            \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZpc{}s}\PY{l+s+s1}{ 开始时间:}\PY{l+s+si}{\PYZpc{}s}\PY{l+s+s1}{;执行函数 }\PY{l+s+si}{\PYZpc{}s}\PY{l+s+s1}{():}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{p}{(}\PY{n}{text}\PY{p}{,}\PY{n}{now\PYZus{}time}\PY{p}{,}\PY{n}{func}\PY{o}{.}\PY{n+nv+vm}{\PYZus{}\PYZus{}name\PYZus{}\PYZus{}}\PY{p}{)}\PY{p}{)}
+            \PY{k}{return} \PY{n}{func}\PY{p}{(}\PY{o}{*}\PY{n}{args}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{kw}\PY{p}{)}
+        \PY{k}{return} \PY{n}{wrapper}
+    \PY{k}{return} \PY{n}{decorator}
+
+\PY{n+nd}{@log}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{自定义}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{k}{def} \PY{n+nf}{run}\PY{p}{(}\PY{n}{a}\PY{p}{)}\PY{p}{:}
+    \PY{n}{a} \PY{o}{=} \PY{n}{a}\PY{o}{+}\PY{l+m+mi}{1}
+\PY{n}{run}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+自定义 开始时间:2020-11-20 21:01:40;执行函数 run():
+    \end{Verbatim}
+
+    \hypertarget{classux7c7b}{%
+\subsection{class类}\label{classux7c7b}}
+
+\textbf{1.访问限制}
+让内部属性不被外部访问，可以把属性的名称前加上两个下划线\_\_，在Python中，实例的变量名如果以\_\_开头，就变成了一个私有变量（private），只有内部可以访问，外部不能访问.
+
+\textbf{2.继承和多态}
+当定义一个class的时候，可以从某个现有的class继承，新的class称为子类（Subclass），而被继承的class称为基类、父类或超类（Base
+class、Super class）；
+多态的好处就是，当我们需要传入子类时，我们只需要接收基类就可以了，然后，按照Animal类型进行操作即可，执行的对象也是该子类的。
+
+\textbf{3. \textbf{slots}}
+在定义class的时候，定义一个特殊的\_\_slots\_\_变量，来限制该class实例能添加的属性.除非在子类中也定义\_\_slots\_\_，这样，子类实例允许定义的属性就是自身的\_\_slots\_\_加上父类的\_\_slots\_\_。
+
+\textbf{4.@property} 内部属性，不暴露出去;
+把一个getter方法变成属性，只需要加上@property就可以了，此时，@property本身又创建了另一个装饰器@score.setter，负责把一个setter方法变成属性赋值.
+
+\textbf{5.多重继承MixIn} class h(One,TwoMixIn)
+
+\textbf{6.定制类} 改变类的固有函数\_\_func\_\_()
+参考https://www.liaoxuefeng.com/wiki/1016959663602400/1017590712115904
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{class} \PY{n+nc}{Base}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,}\PY{n}{name} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{base}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{name} \PY{o}{=} \PY{n}{name}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{\PYZus{}\PYZus{}test} \PY{o}{=} \PY{l+m+mi}{0}
+    \PY{k}{def} \PY{n+nf}{run}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{run }\PY{l+s+si}{\PYZpc{}s}\PY{l+s+s2}{\PYZdq{}}\PY{o}{\PYZpc{}}\PY{k}{self}.name)
+
+\PY{k}{class} \PY{n+nc}{One}\PY{p}{(}\PY{n}{Base}\PY{p}{)}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,}\PY{n}{name} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{one}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{name} \PY{o}{=} \PY{n}{name}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{\PYZus{}\PYZus{}test} \PY{o}{=} \PY{l+m+mi}{0}
+    \PY{k}{def} \PY{n+nf}{run}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{run }\PY{l+s+si}{\PYZpc{}s}\PY{l+s+s2}{\PYZdq{}}\PY{o}{\PYZpc{}}\PY{k}{self}.name)
+\PY{k}{def} \PY{n+nf}{test}\PY{p}{(}\PY{n}{base}\PY{p}{)}\PY{p}{:}
+    \PY{n}{base}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{)}
+\PY{n}{test}\PY{p}{(}\PY{n}{Base}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n}{test}\PY{p}{(}\PY{n}{One}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n}{Base}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{\PYZus{}\PYZus{}test}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+run base
+run one
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+        ---------------------------------------------------------------------------
+
+        AttributeError                            Traceback (most recent call last)
+
+        <ipython-input-29-81fbddd91b7d> in <module>
+         16 test(Base())
+         17 test(One())
+    ---> 18 Base().\_\_test
+    
+
+        AttributeError: 'Base' object has no attribute '\_\_test'
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}只允许对Student实例添加name和age属性}
+\PY{k}{class} \PY{n+nc}{Student}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
+    \PY{n+nv+vm}{\PYZus{}\PYZus{}slots\PYZus{}\PYZus{}} \PY{o}{=} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{name}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{age}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{c+c1}{\PYZsh{} 用tuple定义允许绑定的属性名称}
+\PY{n}{s} \PY{o}{=} \PY{n}{Student}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{} 创建新的实例}
+\PY{n}{s}\PY{o}{.}\PY{n}{name} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Michael}\PY{l+s+s1}{\PYZsq{}} \PY{c+c1}{\PYZsh{} 绑定属性\PYZsq{}name\PYZsq{}}
+\PY{n}{s}\PY{o}{.}\PY{n}{age} \PY{o}{=} \PY{l+m+mi}{25} \PY{c+c1}{\PYZsh{} 绑定属性\PYZsq{}age\PYZsq{}}
+\PY{n}{s}\PY{o}{.}\PY{n}{score} \PY{o}{=} \PY{l+m+mi}{99} \PY{c+c1}{\PYZsh{} 绑定属性\PYZsq{}score\PYZsq{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+        ---------------------------------------------------------------------------
+
+        AttributeError                            Traceback (most recent call last)
+
+        <ipython-input-30-a4f38a7ddf64> in <module>
+          5 s.name = 'Michael' \# 绑定属性'name'
+          6 s.age = 25 \# 绑定属性'age'
+    ----> 7 s.score = 99 \# 绑定属性'score'
+    
+
+        AttributeError: 'Student' object has no attribute 'score'
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{class} \PY{n+nc}{Student}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
+    \PY{n+nd}{@property}
+    \PY{k}{def} \PY{n+nf}{score}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{\PYZus{}score}
+    
+    \PY{n+nd}{@score}\PY{o}{.}\PY{n}{setter}
+    \PY{k}{def} \PY{n+nf}{score}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{value}\PY{p}{)}\PY{p}{:}
+        \PY{k}{if} \PY{o+ow}{not} \PY{n+nb}{isinstance}\PY{p}{(}\PY{n}{value}\PY{p}{,} \PY{n+nb}{int}\PY{p}{)}\PY{p}{:}
+            \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{score must be an integer!}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{k}{if} \PY{n}{value} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0} \PY{o+ow}{or} \PY{n}{value} \PY{o}{\PYZgt{}} \PY{l+m+mi}{100}\PY{p}{:}
+            \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{score must between 0 \PYZti{} 100!}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{\PYZus{}score} \PY{o}{=} \PY{n}{value}
+    
+    \PY{n+nd}{@property}
+    \PY{k}{def} \PY{n+nf}{real\PYZus{}score}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return}  \PY{n+nb}{int}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{\PYZus{}score} \PY{o}{*} \PY{l+m+mf}{0.8}\PY{p}{)}  \PY{c+c1}{\PYZsh{}只能通过self.\PYZus{}score修改，所以为只读}
+\PY{n}{s} \PY{o}{=} \PY{n}{Student}\PY{p}{(}\PY{p}{)}
+\PY{n}{s}\PY{o}{.}\PY{n}{score} \PY{o}{=} \PY{l+m+mi}{19}
+\PY{n}{s}\PY{o}{.}\PY{n}{real\PYZus{}score}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+15
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{ux751fux6210ux5668generatorux8fedux4ee3ux5668iterator}{%
+\subsection{生成器（generator）、迭代器（iterator）}\label{ux751fux6210ux5668generatorux8fedux4ee3ux5668iterator}}
+
+\hypertarget{ux8d4bux503cux751fux6210ux5668}{%
+\subsubsection{1.赋值生成器}\label{ux8d4bux503cux751fux6210ux5668}}
+
+\begin{quote}
+\textbf{创建}
+方法：\texttt{x\ =\ (variable\ for\ variable\ in\ iterable)}
+例如：\texttt{x\ =\ (i\ for\ i\ in\ range(10))} \texttt{print(x)}
+\texttt{\textless{}generator\ object\ \textless{}genexpr\textgreater{}\ at\ 0x00000000006B85C8\textgreater{}}
+返回值：generator \#使用元祖推导式的时候回变成一个生成器。
+\end{quote}
+
+\begin{quote}
+\textbf{调用} 方法：x.\_\_next\_\_() 返回值：object
+\#对应生成器一般使用该种方法调用，当然也可以通过for循环进行遍历。
+\end{quote}
+
+\hypertarget{ux51fdux6570ux751fux6210ux5668yield}{%
+\subsubsection{2.函数生成器yield}\label{ux51fdux6570ux751fux6210ux5668yield}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}yield生成器}
+\PY{k}{def} \PY{n+nf}{foo}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{starting...}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{k}{while} \PY{k+kc}{True}\PY{p}{:}
+        \PY{n}{res} \PY{o}{=} \PY{k}{yield} \PY{l+m+mi}{4}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{res:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{res}\PY{p}{)}
+\PY{n}{f} \PY{o}{=} \PY{n}{foo}\PY{p}{(}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{end1:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{f}\PY{o}{.}\PY{n+nf+fm}{\PYZus{}\PYZus{}next\PYZus{}\PYZus{}}\PY{p}{(}\PY{p}{)}\PY{p}{)}         \PY{c+c1}{\PYZsh{}会返回4，此时中断于 res = yield 4 后；}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{end2:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n+nb}{next}\PY{p}{(}\PY{n}{f}\PY{p}{)}\PY{p}{)}         \PY{c+c1}{\PYZsh{}再次执行 next(f), 会接着执行 print(\PYZdq{}res:\PYZdq{},res)然后又到该句之前；}
+\PY{n}{f}\PY{o}{.}\PY{n}{send}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}      \PY{c+c1}{\PYZsh{}执行 f.send(10)， 执行完，返回4，且打印res:10}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+starting{\ldots}
+end1: 4
+res: None
+end2: 4
+res: 10
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+4
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{ux8fedux4ee3ux5668}{%
+\subsubsection{3.迭代器}\label{ux8fedux4ee3ux5668}}
+
+\begin{quote}
+迭代器是一个可以记住遍历的位置的对象。
+迭代器对象从集合的第一个元素开始访问，直到所有的元素被访问完结束。迭代器只能往前不会后退。
+迭代器有两个基本的方法：iter() 和 next()。
+字符串，列表或元组对象都可用于创建迭代器
+\end{quote}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{a} \PY{o}{=} \PY{p}{[}\PY{n}{i} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{]}
+\PY{n}{it\PYZus{}a} \PY{o}{=} \PY{n+nb}{iter}\PY{p}{(}\PY{n}{a}\PY{p}{)}\PY{c+c1}{\PYZsh{}创建迭代器对象,之后就可以用 next 方法}
+\PY{k}{while} \PY{k+kc}{True}\PY{p}{:}
+    \PY{k}{try}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{next}\PY{p}{(}\PY{n}{it\PYZus{}a}\PY{p}{)}\PY{p}{)}
+    \PY{k}{except}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{取完了}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{k}{break}
+\PY{c+c1}{\PYZsh{}上面已经取完了，要用需要重新新建对象 ;当然迭代器都能用 for  in; 同 next }
+    
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{l+s+sd}{    创建迭代器}
+\PY{l+s+sd}{    StopIteration 异常用于标识迭代的完成，防止出现无限循环的情况，}
+\PY{l+s+sd}{    在 \PYZus{}\PYZus{}next\PYZus{}\PYZus{}() 方法中我们可以设置在完成指定循环次数后触发 StopIteration 异常来结束迭代。 }
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{class} \PY{n+nc}{MyNumbers}\PY{p}{:}
+  \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}iter\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{a} \PY{o}{=} \PY{l+m+mi}{1}
+    \PY{k}{return} \PY{n+nb+bp}{self}
+ 
+  \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}next\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{a} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{l+m+mi}{20}\PY{p}{:}
+      \PY{n}{x} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{a}
+      \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{a} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1}
+      \PY{k}{return} \PY{n}{x}
+    \PY{k}{else}\PY{p}{:}
+      \PY{k}{raise} \PY{n+ne}{StopIteration}
+ 
+\PY{n}{myclass} \PY{o}{=} \PY{n}{MyNumbers}\PY{p}{(}\PY{p}{)}
+\PY{n}{myiter} \PY{o}{=} \PY{n+nb}{iter}\PY{p}{(}\PY{n}{myclass}\PY{p}{)}
+\PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n}{myiter}\PY{p}{:}
+  \PY{n+nb}{print}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{end}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{,}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+0
+1
+2
+3
+4
+取完了
+1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}

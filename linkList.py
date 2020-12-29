@@ -1,5 +1,3 @@
-
-
 '''
     python知识：
     1、类(object):
